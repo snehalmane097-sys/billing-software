@@ -1,0 +1,14 @@
+export const states={'01':'Jammu and Kashmir','02':'Himachal Pradesh','03':'Punjab','04':'Chandigarh','05':'Uttarakhand','06':'Haryana','07':'Delhi','08':'Rajasthan','09':'Uttar Pradesh','10':'Bihar','11':'Sikkim','12':'Arunachal Pradesh','13':'Nagaland','14':'Manipur','15':'Mizoram','16':'Tripura','17':'Meghalaya','18':'Assam','19':'West Bengal','20':'Jharkhand','21':'Odisha','22':'Chhattisgarh','23':'Madhya Pradesh','24':'Gujarat','26':'Dadra and Nagar Haveli and Daman and Diu','27':'Maharashtra','29':'Karnataka','30':'Goa','31':'Lakshadweep','32':'Kerala','33':'Tamil Nadu','34':'Puducherry','35':'Andaman and Nicobar Islands','36':'Telangana','37':'Andhra Pradesh','38':'Ladakh','97':'Other territory'};
+export const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export function currency(value,{symbol=true}={}){
+ if(value==null)return '—';if(!Number.isSafeInteger(value))throw Error('Document money must be integer paise');
+ const n=BigInt(value),negative=n<0n,abs=negative?-n:n,whole=(abs/100n).toString(),end=whole.slice(-3),start=whole.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',');
+ return `${negative?'−':''}${symbol?'₹ ':''}${start?start+',':''}${end}.${String(abs%100n).padStart(2,'0')}`;
+}
+export const stateName=code=>code?`${states[code]||'State'} (${code})`:'—';
+export function dateLabel(value){if(!value)return '—';const d=new Date(value+'T00:00:00Z');return Number.isNaN(d.getTime())?String(value):d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'});}
+export function financialYear(value){if(!value)return '';const [year,month]=value.split('-').map(Number),start=year-(month<4?1:0);return `${start}–${String(start+1).slice(-2)}`;}
+const ones=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'],tens=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+function small(n){if(n<20)return ones[n];if(n<100)return tens[Math.floor(n/10)]+(n%10?' '+ones[n%10]:'');return ones[Math.floor(n/100)]+' Hundred'+(n%100?' '+small(n%100):'');}
+function words(n){if(!n)return '';if(n>=10000000)return words(Math.floor(n/10000000))+' Crore'+(n%10000000?' '+words(n%10000000):'');if(n>=100000)return small(Math.floor(n/100000))+' Lakh'+(n%100000?' '+words(n%100000):'');if(n>=1000)return small(Math.floor(n/1000))+' Thousand'+(n%1000?' '+words(n%1000):'');return small(n);}
+export function amountInWords(value){if(!Number.isSafeInteger(value))throw Error('Invalid amount in words');const abs=Math.abs(value),rupees=Math.floor(abs/100),paise=abs%100;return `${value<0?'Minus ':''}Indian Rupees ${rupees?words(rupees):'Zero'}${paise?' and '+small(paise)+' Paise':''} Only`;}

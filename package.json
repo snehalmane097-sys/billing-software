@@ -1,0 +1,23 @@
+{
+  "name": "gst-billing-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/build.mjs && node --experimental-sqlite server/index.mjs",
+    "server": "node --experimental-sqlite server/index.mjs",
+    "build": "node node_modules/typescript/bin/tsc -p tsconfig.json && node scripts/build.mjs",
+    "start": "node --experimental-sqlite server/index.mjs",
+    "test": "node --experimental-sqlite --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.0"
+  }
+}
